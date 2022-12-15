@@ -30,6 +30,9 @@ class LoginFormState extends State<LoginForm> {
     for (var field in _formKey.currentState!.fields.values) {
       field.reset();
     }
+    setState(() {
+      _isFormValid = false;
+    });
   }
 
   @override
