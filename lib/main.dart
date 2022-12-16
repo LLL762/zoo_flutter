@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:zoo_flutter/src/app_container.dart';
+import 'package:zoo_flutter/src/features/authentication/services/log_in_service.dart';
 import 'src/features/authentication/presentation/login_form.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const AppContainer(logInService: LogInService(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

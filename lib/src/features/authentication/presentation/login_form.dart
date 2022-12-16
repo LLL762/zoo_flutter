@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:zoo_flutter/src/app_container.dart';
+import 'package:zoo_flutter/src/features/authentication/model/login_request.dart';
+
+import '../services/i_log_in_service.dart';
 export 'login_form.dart';
 
 class LoginForm extends StatefulWidget {
@@ -14,16 +18,20 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormBuilderState>();
+  LoginRequest? model;
   bool _isFormValid = false;
-
-  onSubmit() {
-    print(_formKey.currentState!.isValid);
-  }
+  late ILogInService logInService;
 
   onfieldChange(value) {
     setState(() {
       _isFormValid = _formKey.currentState!.validate();
     });
+  }
+
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    logInService = AppContainer.of(context)?.logInService as ILogInService;
   }
 
   reset() {
@@ -33,6 +41,18 @@ class LoginFormState extends State<LoginForm> {
     setState(() {
       _isFormValid = false;
     });
+  }
+
+  onSubmit() async {
+    final formData = _formKey.currentState!.fields
+        .map((key, textField) => MapEntry(key, textField.value));
+
+    try {
+      final resp = await logInService.logIn(formData);
+      print(resp.statusCode);
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -58,6 +78,7 @@ class LoginFormState extends State<LoginForm> {
               name: "password",
               decoration:
                   const InputDecoration(hintText: "enter your password"),
+              obscureText: true,
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.required(),
                 FormBuilderValidators.minLength(12),
@@ -77,7 +98,7 @@ class LoginFormState extends State<LoginForm> {
                 child: const Text('reset'),
               )
             ],
-          )
+          ),
         ]));
   }
 }
