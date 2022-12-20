@@ -4,5 +4,3 @@ class LoginRequest {
 
   LoginRequest(this.username, this.password);
 }
-
-enum LogInStatus { logIn, logOut, needRefresh }

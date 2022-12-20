@@ -22,7 +22,8 @@ class LoginFormState extends State<LoginForm> {
   bool _isFormValid = false;
   late ILogInService logInService;
 
-  onfieldChange(value) {
+  onfieldChange(value) async {
+    print(await logInService.getLogInStatus());
     setState(() {
       _isFormValid = _formKey.currentState!.validate();
     });
@@ -31,7 +32,7 @@ class LoginFormState extends State<LoginForm> {
   @override
   didChangeDependencies() {
     super.didChangeDependencies();
-    logInService = AppContainer.of(context)?.logInService as ILogInService;
+    logInService = ILogInService("");
   }
 
   reset() {

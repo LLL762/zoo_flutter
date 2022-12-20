@@ -1,49 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:zoo_flutter/src/app_container.dart';
-import 'package:zoo_flutter/src/features/authentication/services/log_in_service.dart';
+import 'package:go_router/go_router.dart';
+import 'package:zoo_flutter/src/features/authentication/model/log_in_status.dart';
+import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
+import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
+import 'package:zoo_flutter/src/features/content/tasks/tasks_list/presentation/tasks_list.dart';
 import 'src/features/authentication/presentation/login_form.dart';
 
-void main() {
-  runApp(const AppContainer(logInService: LogInService(), child: MyApp()));
-}
+void main() => runApp(const MyApp());
 
+final ILogInService loginService = ILogInService("");
+
+/// The route configuration.
+final GoRouter _router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) {
+        return const HomeScreen();
+      },
+      routes: <RouteBase>[
+        GoRoute(
+          path: 'details',
+          builder: (BuildContext context, GoRouterState state) {
+            return const DetailsScreen();
+          },
+          redirect: (context, state) async {
+            if (await loginService.getLogInStatus() != LogInStatus.logIn) {
+              return '/';
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
+  ],
+);
+
+/// The main app.
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  /// Constructs a [MyApp]
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return MaterialApp.router(
+      routerConfig: _router,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+/// The home screen
+class HomeScreen extends StatelessWidget {
+  /// Constructs a [HomeScreen]
+  const HomeScreen({Key? key}) : super(key: key);
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: const Text('Home Screen')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            LoginForm(),
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () => context.go('/details'),
+              child: const Text('Go to the Details screen'),
+            ),
+            const LoginForm()
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The details screen
+class DetailsScreen extends StatelessWidget {
+  /// Constructs a [DetailsScreen]
+  const DetailsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Details Screen')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () => context.go('/'),
+              child: const Text('Go back to the Home screen'),
+            ),
+            TasksList(ITaskService("")),
           ],
         ),
       ),
