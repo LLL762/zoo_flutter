@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_strategy/url_strategy.dart';
 import 'package:zoo_flutter/src/features/authentication/model/log_in_status.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/tasks_list/presentation/tasks_list.dart';
 import 'src/features/authentication/presentation/login_form.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  setPathUrlStrategy();
+  runApp(const MyApp());
+}
 
 final ILogInService loginService = ILogInService("");
 
