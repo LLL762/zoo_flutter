@@ -10,6 +10,8 @@ class TasksList extends StatelessWidget {
 
   _futureBuilder(BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
     if (snapshot.hasError) {
+      print(snapshot.error);
+
       return const Text("error!");
     }
 
@@ -24,7 +26,12 @@ class TasksList extends StatelessWidget {
                     clipBehavior: Clip.hardEdge,
                     child: InkWell(
                         onTap: () => context.go("/tasks/${task.id}"),
-                        child: Text(textAlign: TextAlign.left, task.id))))
+                        child: Column(children: [
+                          Text(textAlign: TextAlign.left, task.id ?? ""),
+                          Text(
+                              textAlign: TextAlign.left,
+                              task.createdBy?.firstname ?? "")
+                        ]))))
                 .toList() ??
             [],
       );

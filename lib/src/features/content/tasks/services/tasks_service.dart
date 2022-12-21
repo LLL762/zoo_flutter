@@ -32,6 +32,6 @@ class TaskService implements ITaskService {
       HttpHeaders.authorizationHeader: bearerToken ?? ""
     });
 
-    return Task.fromJson(jsonDecode(resp.body)["data"]);
+    return Task.fromMap(jsonDecode(resp.body)["data"]);
   }
 }

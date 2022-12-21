@@ -10,6 +10,7 @@ class TaskDetail extends StatelessWidget {
 
   _futureBuilder(BuildContext context, AsyncSnapshot<Task> snapshot) {
     if (snapshot.hasError) {
+      print(snapshot.error);
       return const Text("error!");
     }
 
