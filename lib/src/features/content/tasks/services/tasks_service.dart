@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
@@ -21,9 +20,18 @@ class TaskService implements ITaskService {
       HttpHeaders.authorizationHeader: bearerToken ?? ""
     });
 
-    print(resp.statusCode);
-    print(jsonDecode(resp.body)["data"]["tasks"][0]);
-
     return Task.fromJsonArray(jsonDecode(resp.body)["data"]["tasks"]);
+  }
+
+  @override
+  Future<Task> getTaskDetail(String id) async {
+    final bearerToken = await _logInService.getBearerToken();
+
+    final resp = await http.get(Uri.parse("$tasksUrl/$id"), headers: {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader: bearerToken ?? ""
+    });
+
+    return Task.fromJson(jsonDecode(resp.body)["data"]);
   }
 }

@@ -1,6 +1,5 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zoo_flutter/src/features/content/tasks/model/task.dart';
 import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
 
@@ -9,15 +8,8 @@ class TasksList extends StatelessWidget {
 
   const TasksList(this._taskService, {super.key});
 
-  _getTaskList() async {
-    return _taskService.getTasksList();
-  }
-
   _futureBuilder(BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
-    final connectState = snapshot.connectionState;
-
     if (snapshot.hasError) {
-      print(snapshot.error);
       return const Text("error!");
     }
 
@@ -28,7 +20,11 @@ class TasksList extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: snapshot.data
-                ?.map((task) => Text(textAlign: TextAlign.left, task.id))
+                ?.map((task) => Card(
+                    clipBehavior: Clip.hardEdge,
+                    child: InkWell(
+                        onTap: () => context.go("/tasks/${task.id}"),
+                        child: Text(textAlign: TextAlign.left, task.id))))
                 .toList() ??
             [],
       );

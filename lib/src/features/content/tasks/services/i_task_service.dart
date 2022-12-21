@@ -12,4 +12,5 @@ abstract class ITaskService {
   }
 
   Future<List<Task>> getTasksList();
+  Future<Task> getTaskDetail(String id);
 }

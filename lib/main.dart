@@ -5,6 +5,7 @@ import 'package:zoo_flutter/src/features/authentication/model/log_in_status.dart
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/tasks_list/presentation/tasks_list.dart';
+import 'package:zoo_flutter/src/features/content/tasks/tasks_list/task_detail.dart/presentation/task_detail.dart';
 import 'src/features/authentication/presentation/login_form.dart';
 
 void main() {
@@ -24,17 +25,31 @@ final GoRouter _router = GoRouter(
       },
       routes: <RouteBase>[
         GoRoute(
-          path: 'details',
-          builder: (BuildContext context, GoRouterState state) {
-            return const DetailsScreen();
-          },
-          redirect: (context, state) async {
-            if (await loginService.getLogInStatus() != LogInStatus.logIn) {
-              return '/';
-            }
-            return null;
-          },
-        ),
+            path: 'tasks',
+            builder: (BuildContext context, GoRouterState state) {
+              return const DetailsScreen();
+            },
+            redirect: (context, state) async {
+              if (await loginService.getLogInStatus() != LogInStatus.logIn) {
+                return '/';
+              }
+              return null;
+            },
+            routes: [
+              GoRoute(
+                  path: ':id',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return TaskDetail(ITaskService(""), state.params['id']!);
+                  },
+                  redirect: (context, state) async {
+                    if (state.params['id'] == null ||
+                        await loginService.getLogInStatus() !=
+                            LogInStatus.logIn) {
+                      return '/';
+                    }
+                    return null;
+                  })
+            ]),
       ],
     ),
   ],
@@ -67,7 +82,7 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              onPressed: () => context.go('/details'),
+              onPressed: () => context.go('/tasks'),
               child: const Text('Go to the Details screen'),
             ),
             const LoginForm()
