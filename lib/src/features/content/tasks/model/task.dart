@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:zoo_flutter/src/features/content/app_users/model/app_user.dart';
 
@@ -14,6 +15,8 @@ class Task {
   int? priority;
   AppUser? createdBy;
   List<AppUser> assignTo;
+  DateTime createdAt;
+
   Task({
     this.id,
     this.name,
@@ -23,6 +26,7 @@ class Task {
     this.priority,
     this.createdBy,
     this.assignTo = const <AppUser>[],
+    required this.createdAt,
   });
 
   static List<Task> fromJsonArray(List<dynamic> jsonArray) {
@@ -38,6 +42,7 @@ class Task {
     int? priority,
     AppUser? createdBy,
     List<AppUser>? assignTo,
+    DateTime? createdAt,
   }) {
     return Task(
       id: id ?? this.id,
@@ -48,6 +53,7 @@ class Task {
       priority: priority ?? this.priority,
       createdBy: createdBy ?? this.createdBy,
       assignTo: assignTo ?? this.assignTo,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -61,6 +67,7 @@ class Task {
       'priority': priority,
       'createdBy': createdBy?.toMap(),
       'assignTo': assignTo.map((x) => x.toMap()).toList(),
+      'createdAt': createdAt.millisecondsSinceEpoch,
     };
   }
 
@@ -81,6 +88,7 @@ class Task {
           (x) => AppUser.fromMap(x as Map<String, dynamic>),
         ),
       ),
+      createdAt: DateTime.parse(map['createdAt']),
     );
   }
 
@@ -91,13 +99,12 @@ class Task {
 
   @override
   String toString() {
-    return 'Task(id: $id, name: $name, description: $description, type: $type, status: $status, priority: $priority, createdBy: $createdBy, assignTo: $assignTo)';
+    return 'Task(id: $id, name: $name, description: $description, type: $type, status: $status, priority: $priority, createdBy: $createdBy, assignTo: $assignTo, createdAt: $createdAt)';
   }
 
   @override
   bool operator ==(covariant Task other) {
     if (identical(this, other)) return true;
-    final listEquals = const DeepCollectionEquality().equals;
 
     return other.id == id &&
         other.name == name &&
@@ -106,7 +113,8 @@ class Task {
         other.status == status &&
         other.priority == priority &&
         other.createdBy == createdBy &&
-        listEquals(other.assignTo, assignTo);
+        listEquals(other.assignTo, assignTo) &&
+        other.createdAt == createdAt;
   }
 
   @override
@@ -118,6 +126,7 @@ class Task {
         status.hashCode ^
         priority.hashCode ^
         createdBy.hashCode ^
-        assignTo.hashCode;
+        assignTo.hashCode ^
+        createdAt.hashCode;
   }
 }

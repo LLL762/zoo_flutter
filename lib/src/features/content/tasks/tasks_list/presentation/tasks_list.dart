@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:zoo_flutter/src/features/content/tasks/model/task.dart';
 import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
+import 'package:zoo_flutter/src/features/content/tasks/tasks_list/presentation/card_item/task_list_item_card.dart';
 
 class TasksList extends StatelessWidget {
   final ITaskService _taskService;
@@ -19,21 +19,19 @@ class TasksList extends StatelessWidget {
       return const CircularProgressIndicator();
     }
     if (snapshot.connectionState == ConnectionState.done) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: snapshot.data
-                ?.map((task) => Card(
-                    clipBehavior: Clip.hardEdge,
-                    child: InkWell(
-                        onTap: () => context.go("/tasks/${task.id}"),
-                        child: Column(children: [
-                          Text(textAlign: TextAlign.left, task.id ?? ""),
-                          Text(
-                              textAlign: TextAlign.left,
-                              task.createdBy?.firstname ?? "")
-                        ]))))
-                .toList() ??
-            [],
+      return Container(
+        constraints: const BoxConstraints(minWidth: 300),
+        child: Wrap(
+          children: snapshot.data
+                  ?.map((task) => Column(children: [
+                        TaskListItem(task: task),
+                        const SizedBox(
+                          height: 10,
+                        )
+                      ]))
+                  .toList() ??
+              [],
+        ),
       );
     }
   }
