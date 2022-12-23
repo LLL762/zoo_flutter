@@ -20,7 +20,7 @@ class TaskListItem extends StatelessWidget {
         task.assignTo.map((user) => displayUserInfo(user)).join(", ");
 
     if (assignToInfos.isEmpty) {
-      assignToInfos = "Unknown user";
+      assignToInfos = "Not assigned yet";
     }
 
     return buildRow(
@@ -31,7 +31,7 @@ class TaskListItem extends StatelessWidget {
     String userInfos = displayUserInfo(task.createdBy);
 
     if (userInfos.isEmpty) {
-      userInfos = "nobody";
+      userInfos = "Unknown user";
     }
 
     final formattedCreatedAt =

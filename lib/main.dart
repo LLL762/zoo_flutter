@@ -6,6 +6,7 @@ import 'package:zoo_flutter/src/features/authentication/services/i_log_in_servic
 import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/tasks_list/presentation/tasks_list.dart';
 import 'package:zoo_flutter/src/features/content/tasks/presentation/task_detail.dart';
+import 'package:zoo_flutter/src/widgets/screen_skeleton.dart';
 import 'src/features/authentication/presentation/login_form.dart';
 
 void main() {
@@ -75,22 +76,31 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home Screen')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () => context.go('/tasks'),
-              child: const Text('Go to the Details screen'),
-            ),
-            const LoginForm()
-          ],
-        ),
-      ),
-    );
+    return ScreenSkeleton(
+        body: const Center(child: LoginForm()), logInService: loginService);
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: AppBar(title: const Text('Home Screen')),
+  //     body: Center(
+  //       child: Container(
+  //         constraints: const BoxConstraints(maxWidth: 1600),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: <Widget>[
+  //             ElevatedButton(
+  //               onPressed: () => context.go('/tasks'),
+  //               child: const Text('Go to the Details screen'),
+  //             ),
+  //             const LoginForm()
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 /// The details screen
@@ -100,23 +110,26 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Details Screen')),
-      body: ListView(
-        children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () => context.go('/'),
-                  child: const Text('Go back to the Home screen'),
-                ),
-                TasksList(ITaskService("")),
-              ],
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 800, minWidth: 350),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Details Screen')),
+        body: ListView(
+          children: [
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () => context.go('/'),
+                    child: const Text('Go back to the Home screen'),
+                  ),
+                  TasksList(ITaskService("")),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

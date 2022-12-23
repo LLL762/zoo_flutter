@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:zoo_flutter/src/app_container.dart';
 import 'package:zoo_flutter/src/features/authentication/model/login_request.dart';
 
 import '../services/i_log_in_service.dart';
@@ -20,6 +19,7 @@ class LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormBuilderState>();
   LoginRequest? model;
   bool _isFormValid = false;
+  String? errMsg;
   late ILogInService logInService;
 
   onfieldChange(value) async {
@@ -50,7 +50,12 @@ class LoginFormState extends State<LoginForm> {
 
     try {
       final resp = await logInService.logIn(formData);
-      print(resp.statusCode);
+
+      if (resp.statusCode == 401) {
+        setState(() {
+          errMsg = "Credentials not valid";
+        });
+      }
     } catch (e) {
       print(e);
     }
@@ -58,48 +63,55 @@ class LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return FormBuilder(
-        key: _formKey,
-        child: Column(children: [
-          FormBuilderTextField(
-              name: "username",
-              onChanged: onfieldChange,
-              maxLength: 25,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration:
-                  const InputDecoration(hintText: "enter your username"),
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-                FormBuilderValidators.minLength(5),
-              ])),
-          FormBuilderTextField(
-              maxLength: 255,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              onChanged: onfieldChange,
-              name: "password",
-              decoration:
-                  const InputDecoration(hintText: "enter your password"),
-              obscureText: true,
-              validator: FormBuilderValidators.compose([
-                FormBuilderValidators.required(),
-                FormBuilderValidators.minLength(12),
-              ])),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: _isFormValid ? onSubmit : null,
-                child: const Text('Submit'),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              ElevatedButton(
-                onPressed: reset,
-                child: const Text('reset'),
-              )
-            ],
-          ),
-        ]));
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 600, minWidth: 300),
+      child: FormBuilder(
+          key: _formKey,
+          child: Column(children: [
+            FormBuilderTextField(
+                name: "username",
+                onChanged: onfieldChange,
+                maxLength: 25,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration:
+                    const InputDecoration(hintText: "enter your username"),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.minLength(5),
+                ])),
+            FormBuilderTextField(
+                maxLength: 255,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                onChanged: onfieldChange,
+                name: "password",
+                decoration:
+                    const InputDecoration(hintText: "enter your password"),
+                obscureText: true,
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.minLength(12),
+                ])),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _isFormValid ? onSubmit : null,
+                  child: const Text('Submit'),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                  onPressed: reset,
+                  child: const Text('reset'),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(style: const TextStyle(color: Colors.red), errMsg ?? ""),
+          ])),
+    );
   }
 }
