@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:zoo_flutter/main.dart';
 import 'package:zoo_flutter/src/configs/screen_configs.dart';
+import 'package:zoo_flutter/src/features/authentication/model/log_in_status.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:zoo_flutter/src/features/nav/presentation/drop_down_menu.dart';
 
@@ -25,6 +27,19 @@ class AppNavBar extends StatelessWidget {
     );
   }
 
+  futureAuthIconBuilder(
+      BuildContext context, AsyncSnapshot<LogInStatus> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const CircularProgressIndicator();
+    }
+
+    if (snapshot.connectionState == ConnectionState.done) {
+      return snapshot.data == LogInStatus.logOut
+          ? buildIconBtn("login", Icons.login)
+          : buildIconBtn("profile", Icons.manage_accounts);
+    }
+  }
+
   buildIconsLeft(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLarge = mediaQuery.size.width >= ScreenConfigs.breakpoints.large;
@@ -44,6 +59,10 @@ class AppNavBar extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
     final isMediumHigh =
         mediaQuery.size.width >= ScreenConfigs.breakpoints.large;
+    final authIcon = FutureBuilder(
+        future: loginService.getLogInStatus(),
+        builder: (context, snapshot) =>
+            futureAuthIconBuilder(context, snapshot));
 
     return Wrap(
         spacing: 2,
@@ -51,9 +70,9 @@ class AppNavBar extends StatelessWidget {
             ? [
                 buildIconBtn("settings", Icons.settings),
                 buildIconBtn("help", Icons.help),
-                buildIconBtn("login", Icons.login),
+                authIcon,
               ]
-            : [buildIconBtn("login", Icons.login)]);
+            : [authIcon]);
   }
 
   buildTitle() {
