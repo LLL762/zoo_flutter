@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:zoo_flutter/src/configs/screen_configs.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
+import 'package:zoo_flutter/src/features/nav/presentation/drop_down_menu.dart';
 
 class AppNavBar extends StatelessWidget {
   final ILogInService logInService;
@@ -36,7 +37,7 @@ class AppNavBar extends StatelessWidget {
                 buildIconBtn("zones", Icons.map),
                 buildIconBtn("menu", Icons.menu),
               ]
-            : [buildIconBtn("menu", Icons.menu)]);
+            : [const PopUpNavMenu()]);
   }
 
   buildIconsRight(BuildContext context) {
