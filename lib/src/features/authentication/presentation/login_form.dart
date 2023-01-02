@@ -64,7 +64,7 @@ class LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 600, minWidth: 300),
+      constraints: const BoxConstraints(maxWidth: 600),
       child: FormBuilder(
           key: _formKey,
           child: Column(children: [

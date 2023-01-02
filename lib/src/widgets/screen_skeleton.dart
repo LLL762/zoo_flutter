@@ -14,19 +14,25 @@ class ScreenSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     const maxWidth = ScreenConfigs.maxWidth;
     const minWidth = ScreenConfigs.minWidth;
+    const headerHeight = ScreenConfigs.headerHeight;
 
-    return Scaffold(
-        body: Container(
-      padding: const EdgeInsets.all(10),
-      constraints: const BoxConstraints(maxWidth: maxWidth, minWidth: minWidth),
-      child: ListView(children: [
-        Stack(
-          children: [
-            Positioned(left: 0, child: AppNavBar(logInService: logInService)),
-            Padding(padding: const EdgeInsets.only(top: 100), child: body)
-          ],
+    return Container(
+      constraints: const BoxConstraints(maxWidth: maxWidth),
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Positioned(
+                  top: 0,
+                  left: 0,
+                  child: AppNavBar(logInService: logInService)),
+              Padding(
+                  padding: const EdgeInsets.only(top: headerHeight),
+                  child: body)
+            ],
+          ),
         ),
-      ]),
-    ));
+      ),
+    );
   }
 }
