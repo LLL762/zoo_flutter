@@ -57,7 +57,7 @@ class AppNavBar extends StatelessWidget {
   }
 
   buildTitle() {
-    return Column(children: const [
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: const [
       Text(style: TextStyle(fontSize: 35), "Sigil Zoo App"),
       Text("Zoo management tool")
     ]);
