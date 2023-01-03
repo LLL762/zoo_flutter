@@ -6,21 +6,16 @@ import 'package:zoo_flutter/src/configs/screen_configs.dart';
 import 'package:zoo_flutter/src/features/authentication/model/log_in_status.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:zoo_flutter/src/features/nav/presentation/drop_down_menu.dart';
+import 'package:zoo_flutter/src/widgets/button/default_btn.dart';
 
 class AppNavBar extends StatelessWidget {
   final ILogInService logInService;
 
   const AppNavBar({super.key, required this.logInService});
 
-  buildIconBtn(String text, IconData icon, [void Function()? onClick]) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(12),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-              side: const BorderSide(color: Colors.transparent))),
-      onPressed: onClick ?? () => {},
+  buildIconBtn(String text, IconData icon, [void Function()? onPressed]) {
+    return DefaultBtn(
+      onPressed: onPressed,
       child: Column(
         children: [Icon(size: 32, icon), Text(text)],
       ),
@@ -46,11 +41,12 @@ class AppNavBar extends StatelessWidget {
 
     return Wrap(
         spacing: 2,
+        alignment: WrapAlignment.center,
         children: isLarge
             ? [
+                const PopUpNavMenu(),
                 buildIconBtn("home", Icons.home),
                 buildIconBtn("zones", Icons.map),
-                buildIconBtn("menu", Icons.menu),
               ]
             : [const PopUpNavMenu()]);
   }

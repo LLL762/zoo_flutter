@@ -17,7 +17,7 @@ class ScreenSkeleton extends StatelessWidget {
     const headerHeight = ScreenConfigs.headerHeight;
 
     return Container(
-      constraints: const BoxConstraints(maxWidth: maxWidth),
+      constraints: const BoxConstraints(maxWidth: maxWidth, minWidth: minWidth),
       child: Scaffold(
         body: SingleChildScrollView(
           child: Stack(
@@ -27,7 +27,8 @@ class ScreenSkeleton extends StatelessWidget {
                   left: 0,
                   child: AppNavBar(logInService: logInService)),
               Padding(
-                  padding: const EdgeInsets.only(top: headerHeight),
+                  padding: const EdgeInsets.only(
+                      top: headerHeight + 50, left: 20, right: 20),
                   child: body)
             ],
           ),
