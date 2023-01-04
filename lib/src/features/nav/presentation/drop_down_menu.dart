@@ -1,33 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zoo_flutter/src/configs/screen_configs.dart';
-import 'package:zoo_flutter/src/features/nav/presentation/drop_dow_menu_item.dart';
 import 'package:zoo_flutter/src/widgets/button/default_btn.dart';
 
 class PopUpNavMenu extends StatelessWidget {
-  static List<DropDownNavMenuItem> buildItems(BuildContext context) {
+  static List<PopupMenuItem> buildItems(BuildContext context) {
     return [
-      DropDownNavMenuItem(
-          text: "Home", icon: Icons.home, onPressed: () => context.go("/")),
-      const DropDownNavMenuItem(text: "Zone", icon: Icons.map),
-      const DropDownNavMenuItem(text: "Help", icon: Icons.help),
-      const DropDownNavMenuItem(text: "Settings", icon: Icons.settings),
+      buildItem("Home", Icons.home, () => context.go("/")),
+      buildItem("Zone", Icons.map),
+      buildItem("Help", Icons.help),
+      buildItem("Settings", Icons.settings),
     ];
-  }
-
-  static wrapItems(BuildContext context) {
-    final items = buildItems(context);
-    return items.map((item) => PopupMenuItem(child: item)).toList();
   }
 
   const PopUpNavMenu({super.key});
 
-  buildItem(String text, IconData icon, [void Function()? onClick]) {
-    return TextButton(
-        onPressed: onClick ?? () => {},
-        child: Wrap(
-          children: [Icon(icon), Text(text)],
-        ));
+  static buildItem(String text, IconData icon, [void Function()? onTap]) {
+    return PopupMenuItem(
+      onTap: onTap,
+      child: Wrap(
+        alignment: WrapAlignment.start,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 10,
+        children: [Icon(icon), Text(text)],
+      ),
+    );
   }
 
   @override
@@ -44,7 +41,7 @@ class PopUpNavMenu extends StatelessWidget {
           ],
         ),
       ),
-      itemBuilder: (BuildContext context) => wrapItems(context),
+      itemBuilder: (BuildContext context) => buildItems(context),
     );
   }
 }
