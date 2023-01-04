@@ -5,7 +5,7 @@ abstract class IPreferenceService {
   static IPreferenceService? _instance;
 
   static IPreferenceService factory({String? profile}) {
-    _instance ??= const PreferencesService();
+    _instance ??= PreferencesService();
     return _instance!;
   }
 

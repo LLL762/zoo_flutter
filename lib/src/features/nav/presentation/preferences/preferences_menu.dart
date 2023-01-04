@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:zoo_flutter/src/features/nav/preferences/model/theme_model.dart';
+import 'package:zoo_flutter/src/features/nav/preferences/service/i_preference_service.dart';
 
 class PreferenceMenu extends StatefulWidget {
-  final ThemeModel themeModel;
-
   const PreferenceMenu({
     Key? key,
-    required this.themeModel,
   }) : super(key: key);
 
   @override
@@ -17,6 +15,8 @@ class PreferenceMenu extends StatefulWidget {
 }
 
 class _PreferenceMenuState extends State<PreferenceMenu> {
+  final preferenceService = IPreferenceService.factory();
+
   buildLightDarkSwitch(ThemeModel themeModel) {
     return Row(children: [
       const Icon(size: 22, Icons.sunny),
@@ -24,6 +24,7 @@ class _PreferenceMenuState extends State<PreferenceMenu> {
           value: themeModel.preferDark,
           onChanged: (bool value) {
             themeModel.preferDark = value;
+            preferenceService.setTheme(themeModel);
           }),
       const Icon(size: 22, Icons.mode_night)
     ]);

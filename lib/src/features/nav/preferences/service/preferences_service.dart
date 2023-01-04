@@ -1,12 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/config/preferences_config.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/model/theme_model.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/service/i_preference_service.dart';
 
-class PreferencesService implements IPreferenceService {
+class PreferencesService extends ChangeNotifier implements IPreferenceService {
   static final themeKey = PreferencesConfig.storage.themeKey;
-
-  const PreferencesService();
 
   @override
   getTheme() async {
@@ -18,7 +17,6 @@ class PreferencesService implements IPreferenceService {
       if (data == null || data.isEmpty) {
         return ThemeModel();
       }
-
       return ThemeModel.fromJson(data);
     } catch (e) {
       return ThemeModel();

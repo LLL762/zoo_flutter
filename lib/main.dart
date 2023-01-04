@@ -13,9 +13,12 @@ import 'package:zoo_flutter/src/features/nav/presentation/preferences/preference
 import 'package:zoo_flutter/src/widgets/screen_skeleton.dart';
 import 'src/features/authentication/presentation/login_form.dart';
 
-void main() {
+void main() async {
+  final preferenceService = IPreferenceService.factory();
+  final themeModel = await preferenceService.getTheme();
   setPathUrlStrategy();
-  runApp(MyApp());
+
+  runApp(MyApp(themeModel: themeModel));
 }
 
 final ILogInService loginService = ILogInService("");
@@ -62,15 +65,15 @@ final GoRouter _router = GoRouter(
 
 /// The main app.
 class MyApp extends StatelessWidget {
-  final preferenceService = IPreferenceService.factory();
+  final ThemeModel themeModel;
 
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key, required this.themeModel});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) {
-        return ThemeModel();
+        return themeModel;
       },
       child: Consumer<ThemeModel>(
         builder: (context, value, child) {
@@ -94,12 +97,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenSkeleton(
         body: Center(
-            child: Column(children: [
-          PreferenceMenu(
-            themeModel: ThemeModel(),
-          ),
-          const LoginForm()
-        ])),
+            child: Column(children: const [PreferenceMenu(), LoginForm()])),
         logInService: loginService);
   }
 }
