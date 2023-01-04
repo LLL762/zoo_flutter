@@ -43,7 +43,8 @@ class ThemeModel extends ChangeNotifier {
 
   toThemeData(BuildContext context) {
     return ThemeData(
-        fontFamily: fontName, brightness: preferDark ? Brightness.dark : null);
+        fontFamily: fontName ?? "OpenDyslexicMono",
+        brightness: preferDark ? Brightness.dark : null);
   }
 
   factory ThemeModel.fromMap(Map<String, dynamic> map) {

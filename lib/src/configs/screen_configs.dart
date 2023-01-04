@@ -6,7 +6,7 @@ class ScreenConfigs {
 }
 
 class BreakPoints {
-  final double large = 600;
+  final double large = 800;
   final double mediumHigh = 500;
 
   const BreakPoints();

@@ -86,7 +86,6 @@ class AppNavBar extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.all(5),
         width: width,
-        height: height,
         color: Colors.blue,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
