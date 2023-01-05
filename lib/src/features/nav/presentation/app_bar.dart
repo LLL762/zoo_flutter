@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:zoo_flutter/main.dart';
 import 'package:zoo_flutter/src/configs/screen_configs.dart';
@@ -45,11 +44,11 @@ class AppNavBar extends StatelessWidget {
         alignment: WrapAlignment.center,
         children: isLarge
             ? [
-                const PopUpNavMenu(),
+                PopUpNavMenu(),
                 buildIconBtn("home", Icons.home),
                 buildIconBtn("zones", Icons.map),
               ]
-            : [const PopUpNavMenu()]);
+            : [PopUpNavMenu()]);
   }
 
   buildIconsRight(BuildContext context) {

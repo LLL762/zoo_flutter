@@ -9,7 +9,6 @@ import 'package:zoo_flutter/src/features/content/tasks/tasks_list/presentation/t
 import 'package:zoo_flutter/src/features/content/tasks/presentation/task_detail.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/model/theme_model.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/service/i_preference_service.dart';
-import 'package:zoo_flutter/src/features/nav/presentation/preferences/preferences_menu.dart';
 import 'package:zoo_flutter/src/widgets/screen_skeleton.dart';
 import 'src/features/authentication/presentation/login_form.dart';
 
