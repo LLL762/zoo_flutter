@@ -89,7 +89,6 @@ class AppNavBar extends StatelessWidget {
 
   buildNav(BuildContext context) {
     const maxWidth = ScreenConfigs.maxWidth;
-    const height = ScreenConfigs.headerHeight;
     final width = min(MediaQuery.of(context).size.width, maxWidth);
 
     return Container(

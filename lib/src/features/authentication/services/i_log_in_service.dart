@@ -13,6 +13,8 @@ abstract class ILogInService {
 
   Future<http.Response> logIn(logInReq);
 
+  Future<http.Response> refreshTokens();
+
   Future<LogInStatus> getLogInStatus();
 
   Future<String?> getBearerToken();

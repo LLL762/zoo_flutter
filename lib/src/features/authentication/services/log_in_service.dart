@@ -4,12 +4,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:zoo_flutter/src/features/authentication/configs/auth_configs.dart';
 import 'package:zoo_flutter/src/features/authentication/model/log_in_status.dart';
+import 'package:zoo_flutter/src/features/authentication/model/refresh_request.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:http/http.dart' as http;
 
 class LogInService implements ILogInService {
-  final logInUrl = "http://localhost:3000/api/login";
-  final bearerPrefix = "Bearer ";
+  static const logInUrl = "http://localhost:3000/api/login";
+  static const refreshUrl = "http://localhost:3000/api/refresh-token";
+  static const bearerPrefix = "Bearer ";
+  static const expMarginInSeconds = 10;
   final secureStorage = const FlutterSecureStorage();
 
   const LogInService();
@@ -37,9 +40,32 @@ class LogInService implements ILogInService {
   }
 
   @override
+  Future<http.Response> refreshTokens() async {
+    final refreshToken = await getRefreshToken();
+
+    if (refreshToken == null || !await canRefresh()) {
+      throw Error();
+    }
+
+    final resp = await http.post(Uri.parse(refreshUrl),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+        body: RefreshRequest(refreshToken).toJson());
+
+    final bearer = resp.headers["authorization"];
+    final refresh = jsonDecode(resp.body)[AuthConfig.refreshToken.storeKey];
+
+    if (bearer != null && refresh != null) {
+      await storeTokens(bearer, refresh);
+    }
+
+    return resp;
+  }
+
+  @override
   Future<LogInStatus> getLogInStatus() async {
     final bearerExp = await getBearerTokenExp();
-
     final bearerExpDate = DateTime.tryParse(bearerExp ?? "");
 
     if (bearerExpDate == null) {
@@ -48,6 +74,7 @@ class LogInService implements ILogInService {
     if (bearerExpDate.compareTo(DateTime.now()) > 0) {
       return LogInStatus.logIn;
     }
+
     return await canRefresh() ? LogInStatus.needRefresh : LogInStatus.logOut;
   }
 
@@ -64,6 +91,7 @@ class LogInService implements ILogInService {
 
   canRefresh() async {
     final refreshExp = DateTime.tryParse(await getRefreshTokenExp());
+
     if (refreshExp == null) {
       return false;
     }
@@ -95,11 +123,11 @@ class LogInService implements ILogInService {
 
   @override
   getRefreshToken() async {
-    return secureStorage.read(key: AuthConfig.bearerToken.storeKey);
+    return secureStorage.read(key: AuthConfig.refreshToken.storeKey);
   }
 
   getRefreshTokenExp() async {
-    return secureStorage.read(key: AuthConfig.bearerToken.expStoreKey);
+    return secureStorage.read(key: AuthConfig.refreshToken.expStoreKey);
   }
 
   setRefreshToken(String value) async {
@@ -109,6 +137,6 @@ class LogInService implements ILogInService {
 
   setRefreshTokenExp(DateTime value) async {
     return secureStorage.write(
-        key: AuthConfig.bearerToken.expStoreKey, value: value.toString());
+        key: AuthConfig.refreshToken.expStoreKey, value: value.toString());
   }
 }

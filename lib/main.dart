@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
-import 'package:zoo_flutter/src/features/authentication/model/log_in_status.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/tasks_list/presentation/tasks_list.dart';
-import 'package:zoo_flutter/src/features/content/tasks/presentation/task_detail.dart';
+import 'package:zoo_flutter/src/features/content/tasks/tasks_routes.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/model/theme_model.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/service/i_preference_service.dart';
 import 'package:zoo_flutter/src/widgets/screen_skeleton.dart';
@@ -30,34 +29,7 @@ final GoRouter _router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         return const HomeScreen();
       },
-      routes: <RouteBase>[
-        GoRoute(
-            path: 'tasks',
-            builder: (BuildContext context, GoRouterState state) {
-              return const DetailsScreen();
-            },
-            redirect: (context, state) async {
-              if (await loginService.getLogInStatus() != LogInStatus.logIn) {
-                return '/';
-              }
-              return null;
-            },
-            routes: [
-              GoRoute(
-                  path: ':id',
-                  builder: (BuildContext context, GoRouterState state) {
-                    return TaskDetail(ITaskService(""), state.params['id']!);
-                  },
-                  redirect: (context, state) async {
-                    if (state.params['id'] == null ||
-                        await loginService.getLogInStatus() !=
-                            LogInStatus.logIn) {
-                      return '/';
-                    }
-                    return null;
-                  })
-            ]),
-      ],
+      routes: TasksRoutes().get(),
     ),
   ],
 );

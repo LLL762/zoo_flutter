@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:zoo_flutter/src/features/authentication/services/i_api_req_service.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/model/task.dart';
 import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
@@ -8,18 +9,13 @@ import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.d
 class TaskService implements ITaskService {
   final tasksUrl = "http://localhost:3000/api/tasks";
   final ILogInService _logInService;
+  final IApiRequestService apiReqService = IApiRequestService();
 
-  const TaskService(this._logInService);
+  TaskService(this._logInService);
 
   @override
   Future<List<Task>> getTasksList() async {
-    final bearerToken = await _logInService.getBearerToken();
-
-    final resp = await http.get(Uri.parse(tasksUrl), headers: {
-      HttpHeaders.contentTypeHeader: "application/json",
-      HttpHeaders.authorizationHeader: bearerToken ?? ""
-    });
-
+    final resp = await apiReqService.makeApiRequest(url: tasksUrl);
     return Task.fromJsonArray(jsonDecode(resp.body)["data"]["tasks"]);
   }
 
