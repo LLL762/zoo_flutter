@@ -96,8 +96,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenSkeleton(
-        body: Center(
-            child: Column(children: const [PreferenceMenu(), LoginForm()])),
+        body: Center(child: Column(children: const [LoginForm()])),
         logInService: loginService);
   }
 }

@@ -6,6 +6,7 @@ import 'package:zoo_flutter/src/configs/screen_configs.dart';
 import 'package:zoo_flutter/src/features/authentication/model/log_in_status.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:zoo_flutter/src/features/nav/presentation/drop_down_menu.dart';
+import 'package:zoo_flutter/src/features/nav/presentation/preferences/preferences_menu.dart';
 import 'package:zoo_flutter/src/widgets/button/default_btn.dart';
 
 class AppNavBar extends StatelessWidget {
@@ -64,7 +65,16 @@ class AppNavBar extends StatelessWidget {
         spacing: 2,
         children: isMediumHigh
             ? [
-                buildIconBtn("settings", Icons.settings),
+                PreferenceMenu(
+                  child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Column(
+                        children: const [
+                          Icon(size: 32, Icons.settings),
+                          Text("settings")
+                        ],
+                      )),
+                ),
                 buildIconBtn("help", Icons.help),
                 authIcon,
               ]

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zoo_flutter/src/configs/screen_configs.dart';
+import 'package:zoo_flutter/src/features/nav/presentation/preferences/preferences_menu.dart';
 import 'package:zoo_flutter/src/widgets/button/default_btn.dart';
 
 class PopUpNavMenu extends StatelessWidget {
@@ -9,11 +10,23 @@ class PopUpNavMenu extends StatelessWidget {
       buildItem("Home", Icons.home, () => context.go("/")),
       buildItem("Zone", Icons.map),
       buildItem("Help", Icons.help),
-      buildItem("Settings", Icons.settings),
+      buildSettings(),
     ];
   }
 
   const PopUpNavMenu({super.key});
+
+  static buildSettings() {
+    return PopupMenuItem(
+        child: PreferenceMenu(
+      child: Wrap(
+        alignment: WrapAlignment.start,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 10,
+        children: const [Icon(Icons.settings), Text("settings")],
+      ),
+    ));
+  }
 
   static buildItem(String text, IconData icon, [void Function()? onTap]) {
     return PopupMenuItem(
