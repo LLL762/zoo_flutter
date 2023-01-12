@@ -22,14 +22,16 @@ class ZooMap extends StatelessWidget {
     final svgWidth = calcImgWidth(screenWidth);
     final svgSize = Size(svgWidth, svgWidth * (1 / ZoneMapConfig.ratio));
 
-    return Stack(
-      children: [
-        SvgPicture.asset(placeholderBuilder: (context) {
-          return const CircularProgressIndicator();
-        }, width: svgWidth, ZoneMapConfig.imgLoc),
-        Positioned(
-            child: EnclosureLayer(svgSize: svgSize, enclosures: enclosures))
-      ],
+    return InteractiveViewer(
+      child: Stack(
+        children: [
+          SvgPicture.asset(placeholderBuilder: (context) {
+            return const CircularProgressIndicator();
+          }, width: svgWidth, ZoneMapConfig.imgLoc),
+          Positioned(
+              child: EnclosureLayer(svgSize: svgSize, enclosures: enclosures))
+        ],
+      ),
     );
   }
 }
