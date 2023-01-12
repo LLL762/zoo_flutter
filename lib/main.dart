@@ -1,20 +1,14 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:touchable/touchable.dart';
 import 'package:url_strategy/url_strategy.dart';
-import 'package:xml/xml.dart';
-import 'package:zoo_flutter/src/configs/screen_configs.dart';
 import 'package:zoo_flutter/src/features/authentication/services/i_log_in_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/services/i_task_service.dart';
 import 'package:zoo_flutter/src/features/content/tasks/tasks_list/presentation/tasks_list.dart';
 import 'package:zoo_flutter/src/features/content/tasks/tasks_routes.dart';
 import 'package:zoo_flutter/src/features/content/zone/model/zoo_map_model.dart';
-import 'package:zoo_flutter/src/features/content/zone/presentation/enclosure_item.dart';
+import 'package:zoo_flutter/src/features/content/zone/presentation/zoo_map.dart';
+import 'package:zoo_flutter/src/features/content/zone/service/i_zoo_map_service.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/model/theme_model.dart';
 import 'package:zoo_flutter/src/features/nav/preferences/service/i_preference_service.dart';
 import 'package:zoo_flutter/src/widgets/screen_skeleton.dart';
@@ -71,6 +65,7 @@ class MyApp extends StatelessWidget {
 /// The home screen
 class HomeScreen extends StatelessWidget {
   final ZooMapChangeNotifier zooMapChangeNotifier = ZooMapChangeNotifier();
+  final IZooMapService zooMapService = IZooMapService();
   bool showTest = false;
 
   /// Constructs a [HomeScreen]
@@ -78,19 +73,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final svgWidth = min(screenWidth - 10, ScreenConfigs.maxWidth - 10);
-
-    parseSvg() async {
-      String generalString =
-          await rootBundle.loadString("images/zone/enclosure-layer.svg");
-      XmlDocument document = XmlDocument.parse(generalString);
-      return document
-          .findAllElements('path')
-          .map((e) => e.getAttribute('d').toString())
-          .toList();
-    }
-
     return ScreenSkeleton(
         body: ListenableProvider<ZooMapChangeNotifier>(
           create: (_) {
@@ -99,31 +81,15 @@ class HomeScreen extends StatelessWidget {
           child: Center(
               child: Column(children: [
             const LoginForm(),
-            Stack(
-              children: [
-                SvgPicture.asset(placeholderBuilder: (context) {
-                  return const CircularProgressIndicator();
-                }, width: svgWidth, "images/zone/zoo_map.svg"),
-                FutureBuilder(
-                  future: parseSvg(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return Consumer<ZooMapChangeNotifier>(
-                        builder: (context, value, child) {
-                          return CanvasTouchDetector(
-                              gesturesToOverride: const [GestureType.onTapDown],
-                              builder: ((context) => CustomPaint(
-                                  size: Size(svgWidth, svgWidth * 597 / 1229),
-                                  painter: EnclosureItemPainter(
-                                      snapshot.data!, context, value))));
-                        },
-                      );
-                    }
+            FutureBuilder(
+                future: zooMapService.getEnclosuresAreas(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
-                  },
-                )
-              ],
-            ),
+                  }
+
+                  return ZooMap(enclosures: snapshot.data ?? []);
+                }),
           ])),
         ),
         logInService: loginService);
